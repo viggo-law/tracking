@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Viggo Law</title>
+  <meta http-equiv="refresh" content="2;url=https://wa.me/16892337706">
+  <style>
+    body {
+      margin: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      background: #0a0a0a;
+    }
+    .spinner {
+      width: 32px;
+      height: 32px;
+      border: 2px solid #ffffff18;
+      border-top-color: #fff;
+      border-radius: 50%;
+      animation: spin 0.7s linear infinite;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+  </style>
+</head>
+<body>
+  <div class="spinner"></div>
+  <script>
+    (function () {
+      const WHATSAPP_NUMBER = '16892337706';
+      const TRACK_ENDPOINT  = '/.netlify/functions/track';
+
+      const params  = new URLSearchParams(window.location.search);
+      const waUrl   = 'https://wa.me/' + WHATSAPP_NUMBER;
+
+      const clickId = Date.now().toString(36) + Math.random().toString(36).slice(2, 7);
+
+      const payload = {
+        utm_source:   params.get('utm_source')   || '',
+        utm_campaign: params.get('utm_campaign') || '',
+        utm_content:  params.get('utm_content')  || '',
+        utm_medium:   params.get('utm_medium')   || '',
+        click_id:     clickId,
+        referrer:     document.referrer || '',
+      };
+
+      Promise.race([
+        fetch(TRACK_ENDPOINT, {
+          method:    'POST',
+          headers:   { 'Content-Type': 'application/json' },
+          body:      JSON.stringify(payload),
+          keepalive: true,
+        }),
+        new Promise(resolve => setTimeout(resolve, 800)),
+      ]).finally(() => {
+        window.location.replace(waUrl);
+      });
+
+      setTimeout(() => { window.location.replace(waUrl); }, 1200);
+    })();
+  </script>
+</body>
+</html>
